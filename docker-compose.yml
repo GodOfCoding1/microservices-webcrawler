@@ -8,7 +8,8 @@ services:
       - ./frontend:/app
     command: ["npm", "start"]
     depends_on:
-        - postgres
+      postgres:
+            condition: service_healthy
   crawler:
     build: ./crawler
     ports:
@@ -17,7 +18,8 @@ services:
       - ./crawler:/app
     command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
     depends_on:
-        - postgres
+        postgres:
+          condition: service_healthy
   backend:
     build: ./backend
     ports:
@@ -26,9 +28,12 @@ services:
       - ./backend:/app
     command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "7000"]
     depends_on:
-        - postgres
+        postgres:
+          condition: service_healthy
   postgres:
     image: postgres:latest
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
     container_name: postgres_container
     environment:
       POSTGRES_USER: user
