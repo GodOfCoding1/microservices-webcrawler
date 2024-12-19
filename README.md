@@ -23,7 +23,7 @@ https://drive.google.com/file/d/1jSO4YeJ0oU6kyq7H6e31YhWR2uNRjS5k/view?usp=shari
 ### Microservice Design
 
 - Main backend api - responsible for saving to the database and invoking requests to crawler if needed. Has a queue system to enable asynchronous saving to database (users will get faster response as they are not waiting for save to database to finish)
-- Crawler - responside for crawling the website accordin to the query given
+- Crawler - responside for crawling the website accordin to the query given. Kept seperate from backend api to avoid single point of failure. 
 - Postgresql Instance
 - Frontend- Frontend made in react
 
