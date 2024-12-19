@@ -30,3 +30,4 @@ https://drive.google.com/file/d/1jSO4YeJ0oU6kyq7H6e31YhWR2uNRjS5k/view?usp=shari
 ### Assumptions 
 
 - Assumes the data never changes after initial query. Would have been time consuming to impliment
+- Only extracts textual data.
