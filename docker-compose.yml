@@ -1,0 +1,43 @@
+services:
+  frontend:
+    build: ./frontend
+    container_name: frontend_c
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/app
+    command: ["npm", "start"]
+    depends_on:
+        - postgres
+  crawler:
+    build: ./crawler
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./crawler:/app
+    command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+    depends_on:
+        - postgres
+  backend:
+    build: ./backend
+    ports:
+      - "7000:7000"
+    volumes:
+      - ./backend:/app
+    command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "7000"]
+    depends_on:
+        - postgres
+  postgres:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
