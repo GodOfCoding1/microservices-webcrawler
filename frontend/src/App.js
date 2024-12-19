@@ -13,7 +13,7 @@ function App() {
     try {
       setIsloading(true);
       setData([]);
-      const response = await fetch(`http://0.0.0.0:7000/api/data?query=${searchQuery}&type=${type}`);//should not be hardcoded
+      const response = await fetch(`http://localhost:7000/api/data?query=${searchQuery}&type=${type}`);//should not be hardcoded
       if (response.ok) {
         const result = await response.json();
         const table_data = result["data"];
