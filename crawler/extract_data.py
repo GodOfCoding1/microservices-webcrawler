@@ -70,32 +70,42 @@ def extractCompaniesWithQuery(query_string: str):
 
         for id in id_to_link:
             page.goto("https://search.sunbiz.org"+id_to_link[id])
-            container = page.locator("div.detailSection.filingInformation div")
-            document_id_set.add(id)
-            # Extract label-span pairs
-            label_span_dict = {}
-            labels = container.locator("label").element_handles()
-            spans = container.locator("span").element_handles()
+            try:
+                container = page.locator("div.detailSection.filingInformation div")
+                # Extract label-span pairs
+                label_span_dict = {}
+                labels = container.locator("label").element_handles()
+                spans = container.locator("span").element_handles()
 
-            # Match each label with its corresponding span
-            for label, span in zip(labels, spans):
-                label_text = label.inner_text()
-                span_text = span.inner_text()
-                label_span_dict[label_text] = span_text
+                # Match each label with its corresponding span
+                for label, span in zip(labels, spans):
+                    label_text = label.inner_text()
+                    span_text = span.inner_text()
+                    label_span_dict[label_text] = span_text
+            except:
+                # skip the row if main details are not found
+                continue
             
-            # Extract principal address
-            principal_address_element = page.locator('div.detailSection:has(span:text("Principal Address")) div')
-            principal_address = principal_address_element.inner_html().replace("<br>", "\n").strip()
+            try:
+                # Extract principal address
+                principal_address_element = page.locator('div.detailSection:has(span:text("Principal Address")) div')
+                principal_address = principal_address_element.inner_html().replace("<br>", "\n").strip()
+                id_to_details[id]["Principal Address"]=principal_address.replace('\n','')
+            except:
+                id_to_details[id]["Principal Address"]=""
 
-            # Extract mailing address
-            mailing_address_element = page.locator('div.detailSection:has(span:text("Mailing Address")) div')
-            mailing_address = mailing_address_element.inner_html().replace("<br>", "\n").strip()
+            try:
+                # Extract mailing address
+                mailing_address_element = page.locator('div.detailSection:has(span:text("Mailing Address")) div')
+                mailing_address = mailing_address_element.inner_html().replace("<br>", "\n").strip()
+                id_to_details[id]["Mailing Address"]= mailing_address.replace('\n','')
+            except:
+                id_to_details[id]["Mailing Address"]=""
 
-            # Store in a dictionary
-            id_to_details[id]["Principal Address"]= principal_address.replace('\n','')
-            id_to_details[id]["Mailing Address"]= mailing_address.replace('\n','')
+            # Store in a dict
             for key in label_span_dict:
                 id_to_details[id][key]=label_span_dict[key]
+            document_id_set.add(id)
 
         # Close browser
         browser.close()
