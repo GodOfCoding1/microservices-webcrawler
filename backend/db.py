@@ -37,7 +37,7 @@ Base = declarative_base()
 class Company(Base):
     __tablename__ = "company"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    document_id = Column(String, nullable=False)
+    document_id = Column(String, nullable=False, unique=True)
     last_updated = Column(Time, default=lambda: datetime.datetime.now().time(), nullable=False)
 
     # Relationship
